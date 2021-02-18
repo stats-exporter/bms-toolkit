@@ -1,9 +1,9 @@
-name: Export State
+name: Export Stats
 
 on:
   schedule:
-  # 30 mins past the hour
-    - cron: '* * * * *'
+  # Weekly on Sundays
+    - cron: '30 15 * * 0'
   workflow_dispatch:
     
 jobs:
@@ -25,7 +25,7 @@ jobs:
         project_id: ${{ secrets.GCS_PROJECT }}
         export_default_credentials: true
     - name: create traffic dir
-      run: mkdir traffic/
+      run: mkdir -p traffic/
     # Downloads from GCS
     - name: Download existing files
       run: |-
@@ -35,6 +35,7 @@ jobs:
     - name: Repository Traffic 
       uses: sangonzal/repository-traffic-action@v0.1.4
       env:
+        GITHUB_REPOSITORY: google/bms-toolkit
         TRAFFIC_ACTION_TOKEN: ${{ secrets.STATS_TOKEN }} 
      
     - name: Upload results to GCS
