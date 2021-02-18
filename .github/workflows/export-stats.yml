@@ -1,0 +1,42 @@
+name: Export State
+
+on:
+  schedule:
+  # 30 mins past the hour
+    - cron: '* * * * *'
+  workflow_dispatch:
+    
+jobs:
+  # This workflow contains a single job called "traffic"
+  traffic:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+    # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+    - name: Check out workspace
+      uses: actions/checkout@v2
+
+    - name: Setup - gcloud / gsutil
+      uses: google-github-actions/setup-gcloud@master
+      with:
+        service_account_key: ${{ secrets.GCS_SA_KEY }}
+        project_id: ${{ secrets.GCS_PROJECT }}
+        export_default_credentials: true
+    - name: create traffic dir
+      run: mkdir traffic/
+    # Downloads from GCS
+    - name: Download existing files
+      run: |-
+        gsutil rsync gs://${{ secrets.GCS_BUCKET }}/ traffic/
+    
+    # Calculates traffic and clones and stores in CSV file
+    - name: Repository Traffic 
+      uses: sangonzal/repository-traffic-action@v0.1.4
+      env:
+        TRAFFIC_ACTION_TOKEN: ${{ secrets.STATS_TOKEN }} 
+     
+    - name: Upload results to GCS
+      run: |-
+        gsutil rsync traffic/ gs://${{ secrets.GCS_BUCKET }}/
