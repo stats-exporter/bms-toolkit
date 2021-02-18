@@ -33,9 +33,9 @@ jobs:
     
     # Calculates traffic and clones and stores in CSV file
     - name: Repository Traffic 
-      uses: sangonzal/repository-traffic-action@v0.1.4
+      uses: stats-exporter/repository-traffic-action@master
       env:
-        GITHUB_REPOSITORY: google/bms-toolkit
+        REPOSITORY: google/bms-toolkit
         TRAFFIC_ACTION_TOKEN: ${{ secrets.STATS_TOKEN }} 
      
     - name: Upload results to GCS
