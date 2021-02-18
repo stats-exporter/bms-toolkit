@@ -33,7 +33,7 @@ jobs:
     
     # Calculates traffic and clones and stores in CSV file
     - name: Repository Traffic 
-      uses: stats-exporter/repository-traffic-action@master
+      uses: stats-exporter/repository-traffic-action@dev
       env:
         REPOSITORY: google/bms-toolkit
         TRAFFIC_ACTION_TOKEN: ${{ secrets.STATS_TOKEN }} 
